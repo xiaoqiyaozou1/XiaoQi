@@ -1,0 +1,9 @@
+E:\Code\202012\XiaoQi\XiaoQi.EFCore\bin\Debug\netstandard2.0\XiaoQi.EFCore.deps.json
+E:\Code\202012\XiaoQi\XiaoQi.EFCore\bin\Debug\netstandard2.0\XiaoQi.EFCore.dll
+E:\Code\202012\XiaoQi\XiaoQi.EFCore\bin\Debug\netstandard2.0\XiaoQi.EFCore.pdb
+E:\Code\202012\XiaoQi\XiaoQi.EFCore\obj\Debug\netstandard2.0\XiaoQi.EFCore.AssemblyInfoInputs.cache
+E:\Code\202012\XiaoQi\XiaoQi.EFCore\obj\Debug\netstandard2.0\XiaoQi.EFCore.AssemblyInfo.cs
+E:\Code\202012\XiaoQi\XiaoQi.EFCore\obj\Debug\netstandard2.0\XiaoQi.EFCore.csproj.CoreCompileInputs.cache
+E:\Code\202012\XiaoQi\XiaoQi.EFCore\obj\Debug\netstandard2.0\XiaoQi.EFCore.dll
+E:\Code\202012\XiaoQi\XiaoQi.EFCore\obj\Debug\netstandard2.0\XiaoQi.EFCore.pdb
+E:\Code\202012\XiaoQi\XiaoQi.EFCore\obj\Debug\netstandard2.0\XiaoQi.EFCore.csprojAssemblyReference.cache

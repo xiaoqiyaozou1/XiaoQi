@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XiaoQi.EFCore\XiaoQi.EFCore.csproj" />
+    <ProjectReference Include="..\XiaoQi.IService\XiaoQi.IService.csproj" />
+  </ItemGroup>
+
+</Project>
