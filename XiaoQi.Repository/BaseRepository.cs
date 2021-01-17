@@ -33,96 +33,49 @@ namespace XiaoQi.Repository
             var res = _mySqlContext.Remove<TEntity>(model);
             return await _mySqlContext.SaveChangesAsync() > 0;
         }
-
         public async Task<bool> DeleteById(object id)
         {
             var res = await _mySqlContext.FindAsync<TEntity>(id);
+            _mySqlContext.Remove<TEntity>(res);
             return await _mySqlContext.SaveChangesAsync() > 0;
         }
-
-        public  Task<bool> DeleteByIds(object[] ids)
-        {           
-            throw new NotImplementedException();
-        }
-
-    
-        public List<TEntity> Query()
+        public async Task<bool> DeleteByIds(object[] ids)
         {
-            var res= _mySqlContext.Set<TEntity>();
-            return res.ToList();
+            for (int i = 0; i < ids.Length; i++)
+            {
+                var res = await _mySqlContext.FindAsync<TEntity>(ids[i]);
+                _mySqlContext.Remove<TEntity>(res);
+            }
+            return await _mySqlContext.SaveChangesAsync() > 0;
+
         }
 
-        public Task<List<TEntity>> Query(string strWhere)
+        public IQueryable<TEntity> Query()
         {
-            throw new NotImplementedException();
+            var res = _mySqlContext.Set<TEntity>();
+            return res;
         }
 
-        public Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression)
+        public IQueryable<TEntity> Query<S>(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> whereExpression, Expression<Func<TEntity, S>> orderByLambda, out int total)
         {
-            throw new NotImplementedException();
-        }
+            total = _mySqlContext.Set<TEntity>().Where(whereExpression).ToList().Count;
+            var res = _mySqlContext.Set<TEntity>()
+                .Where<TEntity>(whereExpression)
+                .OrderBy<TEntity, S>(orderByLambda)
+                .Skip<TEntity>(pageSize * (pageIndex - 1))
+                .Take<TEntity>(pageSize)
+                .AsQueryable<TEntity>();
+               
+            return res;
 
-        public Task<List<TResult>> Query<TResult>(Expression<Func<TEntity, TResult>> expression)
+        }
+        public async Task<TEntity> QueryById(object objId)
         {
-            throw new NotImplementedException();
+            return await _mySqlContext.FindAsync<TEntity>(objId);
         }
 
-        public Task<List<TResult>> Query<TResult>(string strWhere, Expression<Func<TEntity, TResult>> expression, string strOrderByFileds)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression, string strOrderByFileds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression, Expression<Func<TEntity, object>> orderByExpression, bool isAsc = true)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TEntity>> Query(string strWhere, string strOrderByFileds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression, int intTop, string strOrderByFileds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TEntity>> Query(string strWhere, int intTop, string strOrderByFileds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression, int intPageIndex, int intPageSize, string strOrderByFileds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TEntity>> Query(string strWhere, int intPageIndex, int intPageSize, string strOrderByFileds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TEntity> QueryById(object objId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TEntity> QueryById(object objId, bool blnUseCache = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TEntity>> QueryByIDs(object[] lstIds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TResult>> QueryMuch<T, T2, T3, TResult>(Expression<Func<T, T2, T3, object[]>> joinExpression, Expression<Func<T, T2, T3, TResult>> selectExpression, Expression<Func<T, T2, T3, bool>> whereLambda = null) where T : class, new()
+        public async Task<IQueryable<TEntity>> QueryByIDs(object[] lstIds)
         {
             throw new NotImplementedException();
         }
@@ -146,5 +99,7 @@ namespace XiaoQi.Repository
         {
             throw new NotImplementedException();
         }
+   
+    
     }
 }

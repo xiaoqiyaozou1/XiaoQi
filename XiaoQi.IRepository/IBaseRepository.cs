@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,50 +9,75 @@ namespace XiaoQi.IRepository
 {
    public interface IBaseRepository<TEntity>
     {
+        /// <summary>
+        /// 根据主键ID查数据
+        /// </summary>
+        /// <param name="objId"></param>
+        /// <returns></returns>
         Task<TEntity> QueryById(object objId);
-        Task<TEntity> QueryById(object objId, bool blnUseCache = false);
-        Task<List<TEntity>> QueryByIDs(object[] lstIds);
+        /// <summary>
+        /// 根据一组ID查出一个集合
+        /// </summary>
+        /// <param name="lstIds"></param>
+        /// <returns></returns>
+        Task<IQueryable<TEntity>> QueryByIDs(object[] lstIds);
 
+        /// <summary>
+        /// 添加一个实体
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task<int> Add(TEntity model);
 
+        /// <summary>
+        /// 添加多个实体
+        /// </summary>
+        /// <param name="listEntity"></param>
+        /// <returns></returns>
         Task<int> Add(List<TEntity> listEntity);
 
+        /// <summary>
+        /// 根据主键删除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<bool> DeleteById(object id);
 
+        /// <summary>
+        /// 根据整个实体删除
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task<bool> Delete(TEntity model);
 
+        /// <summary>
+        /// 删除一组数据
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
         Task<bool> DeleteByIds(object[] ids);
 
+        /// <summary>
+        /// 根据实体更新数据
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         Task<bool> Update(TEntity model);
+
+        /// <summary>
+        /// 根据条件 和实体更新数据
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="strWhere"></param>
+        /// <returns></returns>
         Task<bool> Update(TEntity entity, string strWhere);
         Task<bool> Update(object operateAnonymousObjects);
 
         Task<bool> Update(TEntity entity, List<string> lstColumns = null, List<string> lstIgnoreColumns = null, string strWhere = "");
 
-        List<TEntity> Query();
-        Task<List<TEntity>> Query(string strWhere);
-        Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression);
-        Task<List<TResult>> Query<TResult>(Expression<Func<TEntity, TResult>> expression);
-        Task<List<TResult>> Query<TResult>(string strWhere, Expression<Func<TEntity, TResult>> expression, string strOrderByFileds);
-        Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression, string strOrderByFileds);
-        Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression, Expression<Func<TEntity, object>> orderByExpression, bool isAsc = true);
-        Task<List<TEntity>> Query(string strWhere, string strOrderByFileds);
-
-        Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression, int intTop, string strOrderByFileds);
-        Task<List<TEntity>> Query(string strWhere, int intTop, string strOrderByFileds);
-        //Task<List<TEntity>> QuerySql(string strSql, SugarParameter[] parameters = null);
-        //Task<DataTable> QueryTable(string strSql, SugarParameter[] parameters = null);
-
-        Task<List<TEntity>> Query(
-            Expression<Func<TEntity, bool>> whereExpression, int intPageIndex, int intPageSize, string strOrderByFileds);
-        Task<List<TEntity>> Query(string strWhere, int intPageIndex, int intPageSize, string strOrderByFileds);
-
-
-        //Task<PageModel<TEntity>> QueryPage(Expression<Func<TEntity, bool>> whereExpression, int intPageIndex = 1, int intPageSize = 20, string strOrderByFileds = null);
-
-        Task<List<TResult>> QueryMuch<T, T2, T3, TResult>(
-            Expression<Func<T, T2, T3, object[]>> joinExpression,
-            Expression<Func<T, T2, T3, TResult>> selectExpression,
-            Expression<Func<T, T2, T3, bool>> whereLambda = null) where T : class, new();
+        IQueryable<TEntity> Query();
+   
+        IQueryable<TEntity> Query<S>(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> whereExpression, Expression<Func<TEntity, S>> orderByLambda, out int total);
+ 
     }
 }

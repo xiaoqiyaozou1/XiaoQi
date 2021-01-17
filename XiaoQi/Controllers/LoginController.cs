@@ -32,7 +32,7 @@ namespace XiaoQi.Controllers
                     new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(60*60).ToString()) };
                 claims.Add(new Claim(ClaimTypes.Role, "a"));
 
-                List<PermissionItem> permissionItems = new List<PermissionItem>
+                List<PermissionItem> permissionItems = new List<PermissionItem>//这部分数据应该从数据库读取 如果想实时 在验证的地方从新获取最新的
                 {
                     new PermissionItem
                     {
