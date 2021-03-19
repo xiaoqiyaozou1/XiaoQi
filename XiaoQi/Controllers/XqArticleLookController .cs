@@ -1,0 +1,98 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using XiaoQi.EFCore;
+using XiaoQi.EFCore.Models;
+using XiaoQi.IService;
+using XiaoQi.Model;
+
+namespace XiaoQi.Controllers
+{
+    [Route("api/[controller]/[action]")]
+      [ApiController]
+      [Authorize("MyPolicy")]
+    public class XqArticleLookController : ControllerBase
+        {
+            private readonly IXqArticleLookService    _xqArticleLookService;
+
+            private MessageModel messageModel = new MessageModel();
+            public XqArticleLookController (IXqArticleLookService xqArticleLookService)
+            {
+                _xqArticleLookService = xqArticleLookService;
+            }
+            /// <summary>
+            /// 获取
+            /// </summary>
+            /// <returns></returns>
+            [HttpGet]
+            public IActionResult GetXqArticleLooks()
+            {
+                var res = _xqArticleLookService.Query();
+                messageModel.response = res;
+                return new JsonResult(messageModel);
+            }
+
+            /// <summary>
+            /// 添加
+            /// </summary>
+            /// <param name="userinfo"></param>
+            /// <returns></returns>
+            [HttpPost]
+            public async Task<IActionResult> AddXqArticleLook(XqArticleLook xqArticleLook)
+            {
+                var res = await _xqArticleLookService.Add(xqArticleLook);
+                if (res)
+                    messageModel.response = true;
+                else
+                {
+                    messageModel.response = false;
+                    messageModel.msg = "添加失败";
+                }
+                return new JsonResult(messageModel);
+            }
+
+            /// <summary>
+            /// 更新
+            /// </summary>
+            /// <param name="xqArticleLook"></param>
+            /// <returns></returns>
+            [HttpPut]
+            public async Task<IActionResult> UpdateXqArticleLook(XqArticleLook xqArticleLook)
+            {
+                var res = await _xqArticleLookService.Update(xqArticleLook);
+                if (res)
+                    messageModel.response = true;
+                else
+                {
+                    messageModel.response = false;
+                    messageModel.msg = "更新失败";
+                }
+                return new JsonResult(messageModel);
+            }
+
+            /// <summary>
+            /// 删除
+            /// </summary>
+            /// <param name="id"></param>
+            /// <returns></returns>
+            [HttpDelete]
+            public async Task<IActionResult> DeleteById(string id)
+            {
+                var res = await _xqArticleLookService.Delete(id);
+                if (res)
+                    messageModel.response = true;
+                else
+                {
+                    messageModel.response = false;
+                    messageModel.msg = "删除失败";
+                }
+                return new JsonResult(messageModel);
+            }
+
+
+        }
+    }

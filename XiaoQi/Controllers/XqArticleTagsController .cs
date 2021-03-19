@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using XiaoQi.EFCore;
+using XiaoQi.EFCore.Models;
 using XiaoQi.IService;
 using XiaoQi.Model;
 
@@ -14,23 +16,23 @@ namespace XiaoQi.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize("MyPolicy")]
-    public class UserInfoController : ControllerBase
+    public class XqArticleTagsController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IXqArticleTagsService _xqArticleTagsService;
 
         private MessageModel messageModel = new MessageModel();
-        public UserInfoController(IUserService userService, IUserStepsService userStepsService)
+        public XqArticleTagsController(IXqArticleTagsService xqArticleTagsService)
         {
-            _userService = userService;
+            _xqArticleTagsService = xqArticleTagsService;
         }
         /// <summary>
         /// 获取
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult GetUserInfos()
+        public IActionResult GetXqArticleTagss()
         {
-            var res = _userService.Query();
+            var res = _xqArticleTagsService.Query();
             messageModel.response = res;
             return new JsonResult(messageModel);
         }
@@ -41,9 +43,9 @@ namespace XiaoQi.Controllers
         /// <param name="userinfo"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> AddUserInfo(Userinfo userinfo)
+        public async Task<IActionResult> AddXqArticleTags(XqArticleTags xqArticleTags)
         {
-            var res = await _userService.Add(userinfo);
+            var res = await _xqArticleTagsService.Add(xqArticleTags);
             if (res)
                 messageModel.response = true;
             else
@@ -57,12 +59,12 @@ namespace XiaoQi.Controllers
         /// <summary>
         /// 更新
         /// </summary>
-        /// <param name="userinfo"></param>
+        /// <param name="xqArticleTags"></param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<IActionResult> UpdateUserInfo(Userinfo userinfo)
+        public async Task<IActionResult> UpdateXqArticleTags(XqArticleTags xqArticleTags)
         {
-            var res = await _userService.Update(userinfo);
+            var res = await _xqArticleTagsService.Update(xqArticleTags);
             if (res)
                 messageModel.response = true;
             else
@@ -78,10 +80,10 @@ namespace XiaoQi.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpDelete]
         public async Task<IActionResult> DeleteById(string id)
         {
-            var res = await _userService.Delete(id);
+            var res = await _xqArticleTagsService.Delete(id);
             if (res)
                 messageModel.response = true;
             else
@@ -92,6 +94,6 @@ namespace XiaoQi.Controllers
             return new JsonResult(messageModel);
         }
 
-
+    
     }
 }

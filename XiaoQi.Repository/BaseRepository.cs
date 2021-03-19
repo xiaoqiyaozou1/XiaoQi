@@ -5,14 +5,15 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using XiaoQi.EFCore;
+using XiaoQi.EFCore.Models;
 using XiaoQi.IRepository;
 
 namespace XiaoQi.Repository
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, new()
     {
-        private readonly MyContext _mySqlContext;
-        public BaseRepository(MyContext context)
+        private readonly BlogContext _mySqlContext;
+        public BaseRepository(BlogContext context)
         {
             _mySqlContext = context;
         }
@@ -80,9 +81,12 @@ namespace XiaoQi.Repository
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(TEntity model)
+        public async Task<bool> Update(TEntity model)
         {
-            throw new NotImplementedException();
+             _mySqlContext.Update<TEntity>(model);
+             var res = await _mySqlContext.SaveChangesAsync();
+            return res > 0;
+
         }
 
         public Task<bool> Update(TEntity entity, string strWhere)

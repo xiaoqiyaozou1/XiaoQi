@@ -40,7 +40,7 @@ namespace XiaoQi.Controllers
                         Url="/a"
                     }
                 };
-                PermissionRequirement permissionRequirement = new PermissionRequirement("", permissionItems, "Role", "Issuer", "Audience", null, TimeSpan.FromSeconds(60 * 60));
+                PermissionRequirement permissionRequirement = new PermissionRequirement("", permissionItems, "Role", "Issuer", "Audience", null, TimeSpan.FromSeconds(60 * 60 * 24 * 365));
                 var jwtKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("xiaoqixiaoqixiaoqixiaoqixiaoqixiaoqixiaoqi"));//加密验证的key         
                 var jwtCreds = new SigningCredentials(jwtKey, SecurityAlgorithms.HmacSha256); //根据key' 生成的标识
                 permissionRequirement.SigningCredentials = jwtCreds;

@@ -111,8 +111,8 @@ namespace XiaoQi.Moudle.Authorizations
                     // 是否开启测试环境
                     // var isTestCurrent = Appsettings.app(new string[] { "AppSettings", "UseLoadTest" }).ObjToBool();
 
-                    //只做认证 token 验证通过 就允许访问 
-                    if (result?.Principal != null)
+                    //只做认证 token 验证通过 就允许访问  不验证
+                    if (result?.Principal != null || true)
                     {
                         context.Succeed(requirement);
                         return;

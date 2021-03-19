@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using XiaoQi.EFCore;
+using XiaoQi.EFCore.Models;
 using XiaoQi.IRepository;
 using XiaoQi.Model;
 
@@ -10,8 +11,8 @@ namespace XiaoQi.Repository
 {
     public class UserStepsRepository : BaseRepository<UserStepsDto>, IUserStepsRepository
     {
-        private readonly MyContext _mySqlContext;
-        public UserStepsRepository(MyContext context) : base(context)
+        private readonly BlogContext _mySqlContext;
+        public UserStepsRepository(BlogContext context) : base(context)
         {
             _mySqlContext = context;
         }

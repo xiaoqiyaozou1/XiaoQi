@@ -17,19 +17,23 @@ namespace XiaoQi.Service
         {
             _baseRepository = baseRepository;
         }
-        public Task<bool> Add(T t)
+        public async Task<bool> Add(T t)
         {
-            throw new NotImplementedException();
+            var res = await _baseRepository.Add(t);
+            return res > 0;
         }
 
-        public Task<bool> Delete(T t)
+
+        public async Task<bool> Delete(object id)
         {
-            throw new NotImplementedException();
+            var res =await _baseRepository.DeleteById(id);
+            return res;
         }
 
         public IQueryable<T> GetPageInfos<S>(int pageIndex, int pageSize, out int total, Expression<Func<T, bool>> whereLambda, Expression<Func<T, S>> orderByLambda, bool isAsc)
         {
-            throw new NotImplementedException();
+            var res = _baseRepository.Query<S>(pageIndex, pageSize, whereLambda, orderByLambda, out total);
+            return res; 
         }
 
         public Task<List<T>> Query(string where)
@@ -40,12 +44,13 @@ namespace XiaoQi.Service
         public List<T> Query()
         {
             var res = _baseRepository.Query();
-            return res;
+            return res.ToList();
         }
 
-        public Task<T> QueryById(object id)
+        public async Task<T> QueryById(object id)
         {
-            throw new NotImplementedException();
+            var res =await _baseRepository.QueryById(id);
+            return res;
         }
 
         public Task<T> QueryByWhereAsync(Expression<Func<T, bool>> whereExpression)
@@ -53,9 +58,12 @@ namespace XiaoQi.Service
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(T t)
+        public async  Task<bool> Update(T t)
         {
-            throw new NotImplementedException();
+            var res =await _baseRepository.Update(t);
+            return res;
         }
+
+   
     }
 }

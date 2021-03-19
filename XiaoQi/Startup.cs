@@ -17,6 +17,7 @@ using Autofac;
 using XiaoQi.Moudle.Authorizations;
 using Swashbuckle.AspNetCore.Filters;
 using XiaoQi.Filter;
+using XiaoQi.EFCore.Models;
 
 namespace XiaoQi
 {
@@ -43,7 +44,7 @@ namespace XiaoQi
 
 
 
-            services.AddDbContext<MyContext>(o => o.UseMySQL(Configuration.GetConnectionString("MysqlCon")));
+            services.AddDbContext<BlogContext>(o => o.UseMySQL(Configuration.GetConnectionString("MysqlCon")));
 
             services.AddAuthorizationSetup();//权限认证
 
@@ -74,6 +75,17 @@ namespace XiaoQi
                     Type = SecuritySchemeType.ApiKey
                 });
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("XiaoQiAllowOrigins",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:8080")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                });
+            });
         }
         //Autofac容器
         public void ConfigureContainer(ContainerBuilder builder)
@@ -97,6 +109,7 @@ namespace XiaoQi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("XiaoQiAllowOrigins");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

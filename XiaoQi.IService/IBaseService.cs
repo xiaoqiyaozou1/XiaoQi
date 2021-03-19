@@ -25,6 +25,6 @@ namespace XiaoQi.IService
 
         Task<bool> Update(T t);
 
-        Task<bool> Delete(T t);
+        Task<bool> Delete(Object id);
     }
 }
