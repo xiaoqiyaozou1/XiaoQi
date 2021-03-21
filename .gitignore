@@ -8,6 +8,7 @@ obj/
 .tools/
 .vs/
 .vscode/
+wwwroot/
 node_modules/
 BenchmarkDotNet.Artifacts/
 .gradle/

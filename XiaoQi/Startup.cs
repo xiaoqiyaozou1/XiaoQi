@@ -18,6 +18,9 @@ using XiaoQi.Moudle.Authorizations;
 using Swashbuckle.AspNetCore.Filters;
 using XiaoQi.Filter;
 using XiaoQi.EFCore.Models;
+using Microsoft.Extensions.FileProviders;
+using XiaoQi.Utilities;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace XiaoQi
 {
@@ -45,6 +48,15 @@ namespace XiaoQi
 
 
             services.AddDbContext<BlogContext>(o => o.UseMySQL(Configuration.GetConnectionString("MysqlCon")));
+           
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\", Configuration.GetValue<string>("StoredFilesPath"));
+            FileHelper.CheckDirExist(filePath);
+           var physicalProvider = new PhysicalFileProvider(filePath);
+
+            // To list physical files in the temporary files folder, use:
+            //var physicalProvider = new PhysicalFileProvider(Path.GetTempPath());
+
+            services.AddSingleton<IFileProvider>(physicalProvider);
 
             services.AddAuthorizationSetup();//权限认证
 
@@ -114,7 +126,28 @@ namespace XiaoQi
             {
                 app.UseDeveloperExceptionPage();
             }
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\", Configuration.GetValue<string>("StoredFilesPath"));
+            FileHelper.CheckDirExist(filePath);
+            var dir = new DirectoryBrowserOptions();
+            dir.FileProvider = new PhysicalFileProvider(filePath);
+            app.UseDirectoryBrowser(dir);
 
+            var staticFile = new StaticFileOptions();
+
+            staticFile.FileProvider = new PhysicalFileProvider(filePath);
+            //手动设置MIME Type,或者设置一个默认值， 以解决某些文件MIME Type文件识别不到，出现404错误
+            staticFile.ServeUnknownFileTypes = true;
+            staticFile.DefaultContentType = "text/plain;charset=utf-8";//设置默认MIME Type
+            var provider = new FileExtensionContentTypeProvider();//使用一组默认映射创建新的提供程序
+            provider.Mappings[".txt"] = "text/plain;charset=utf-8";//手动设置对应MIME Type
+            provider.Mappings.Add(".log", "text/plain");//手动设置对应MIME Type
+            staticFile.ContentTypeProvider = provider; //将文件映射到内容类型
+
+            app.UseStaticFiles(staticFile);
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    DefaultContentType = "text/plain;charset=utf-8"//设置默认MIME Type
+            //});
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -131,7 +164,7 @@ namespace XiaoQi
             //授权
             app.UseAuthorization();
 
-
+    
 
 
 
