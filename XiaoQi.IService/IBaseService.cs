@@ -13,7 +13,7 @@ namespace XiaoQi.IService
 
         Task<List<T>> Query(string where);
 
-        Task<T> QueryByWhereAsync(Expression<Func<T, bool>> whereExpression);
+      
 
         Task<T> QueryById(Object id);
 
@@ -26,5 +26,7 @@ namespace XiaoQi.IService
         Task<bool> Update(T t);
 
         Task<bool> Delete(Object id);
+
+        T QueryByLambada(Expression<Func<T, bool>> whereExpression);
     }
 }

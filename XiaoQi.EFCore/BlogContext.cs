@@ -39,7 +39,8 @@ namespace XiaoQi.EFCore.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-          }
+
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,9 +50,9 @@ namespace XiaoQi.EFCore.Models
                 entity.ToTable("sys_config");
 
                 entity.Property(e => e.Id)
-                     .HasColumnName("id")
-                     .HasMaxLength(36)
-                     .IsUnicode(false);
+                    .HasColumnName("id")
+                    .HasMaxLength(36)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ConfigKey)
                     .HasColumnName("config_key")
@@ -315,6 +316,11 @@ namespace XiaoQi.EFCore.Models
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .HasComment("添加时间");
 
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.External)
                     .HasColumnName("external")
                     .HasColumnType("tinyint(1) unsigned")
@@ -403,7 +409,7 @@ namespace XiaoQi.EFCore.Models
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasMaxLength(36)
+                    .HasMaxLength(7200)
                     .IsUnicode(false);
 
                 entity.Property(e => e.CreateTime)

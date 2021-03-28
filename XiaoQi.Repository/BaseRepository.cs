@@ -62,7 +62,7 @@ namespace XiaoQi.Repository
             total = _mySqlContext.Set<TEntity>().Where(whereExpression).ToList().Count;
             var res = _mySqlContext.Set<TEntity>()
                 .Where<TEntity>(whereExpression)
-                .OrderBy<TEntity, S>(orderByLambda)
+                .OrderByDescending<TEntity, S>(orderByLambda)
                 .Skip<TEntity>(pageSize * (pageIndex - 1))
                 .Take<TEntity>(pageSize)
                 .AsQueryable<TEntity>();
@@ -79,6 +79,12 @@ namespace XiaoQi.Repository
         public async Task<IQueryable<TEntity>> QueryByIDs(object[] lstIds)
         {
             throw new NotImplementedException();
+        }
+
+        public TEntity QueryByLambada(Expression<Func<TEntity, bool>> whereExpression)
+        {
+            var res = _mySqlContext.Set<TEntity>().Where(whereExpression).ToList().FirstOrDefault();
+            return res;
         }
 
         public async Task<bool> Update(TEntity model)

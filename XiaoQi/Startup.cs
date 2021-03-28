@@ -48,10 +48,10 @@ namespace XiaoQi
 
 
             services.AddDbContext<BlogContext>(o => o.UseMySQL(Configuration.GetConnectionString("MysqlCon")));
-           
+
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\", Configuration.GetValue<string>("StoredFilesPath"));
             FileHelper.CheckDirExist(filePath);
-           var physicalProvider = new PhysicalFileProvider(filePath);
+            var physicalProvider = new PhysicalFileProvider(filePath);
 
             // To list physical files in the temporary files folder, use:
             //var physicalProvider = new PhysicalFileProvider(Path.GetTempPath());
@@ -94,6 +94,7 @@ namespace XiaoQi
                 builder =>
                 {
                     builder.WithOrigins("http://localhost:8080")
+                    .AllowAnyOrigin()
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                 });
@@ -126,6 +127,15 @@ namespace XiaoQi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+
+
+            });
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\", Configuration.GetValue<string>("StoredFilesPath"));
             FileHelper.CheckDirExist(filePath);
             var dir = new DirectoryBrowserOptions();
@@ -148,14 +158,7 @@ namespace XiaoQi
             //{
             //    DefaultContentType = "text/plain;charset=utf-8"//ÉèÖÃÄ¬ÈÏMIME Type
             //});
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.RoutePrefix = string.Empty;
 
-
-            });
 
             app.UseRouting();
 
@@ -164,7 +167,7 @@ namespace XiaoQi
             //ÊÚÈ¨
             app.UseAuthorization();
 
-    
+
 
 
 

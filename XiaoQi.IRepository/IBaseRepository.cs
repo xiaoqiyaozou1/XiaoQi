@@ -78,6 +78,7 @@ namespace XiaoQi.IRepository
         IQueryable<TEntity> Query();
    
         IQueryable<TEntity> Query<S>(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> whereExpression, Expression<Func<TEntity, S>> orderByLambda, out int total);
- 
+
+        TEntity QueryByLambada(Expression<Func<TEntity, bool>> whereExpression);
     }
 }

@@ -53,9 +53,10 @@ namespace XiaoQi.Service
             return res;
         }
 
-        public Task<T> QueryByWhereAsync(Expression<Func<T, bool>> whereExpression)
+        public T QueryByLambada(Expression<Func<T, bool>> whereExpression)
         {
-            throw new NotImplementedException();
+            var res = _baseRepository.QueryByLambada(whereExpression);
+            return res;
         }
 
         public async  Task<bool> Update(T t)
