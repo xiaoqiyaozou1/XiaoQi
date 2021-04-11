@@ -21,6 +21,10 @@ using XiaoQi.EFCore.Models;
 using Microsoft.Extensions.FileProviders;
 using XiaoQi.Utilities;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using System.Collections.Generic;
 
 namespace XiaoQi
 {
@@ -49,16 +53,16 @@ namespace XiaoQi
 
             services.AddDbContext<BlogContext>(o => o.UseMySQL(Configuration.GetConnectionString("MysqlCon")));
 
+
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\", Configuration.GetValue<string>("StoredFilesPath"));
             FileHelper.CheckDirExist(filePath);
             var physicalProvider = new PhysicalFileProvider(filePath);
-
             // To list physical files in the temporary files folder, use:
             //var physicalProvider = new PhysicalFileProvider(Path.GetTempPath());
-
             services.AddSingleton<IFileProvider>(physicalProvider);
 
             services.AddAuthorizationSetup();//权限认证
+
 
             //Swagger 相关注册
             services.AddSwaggerGen(c =>

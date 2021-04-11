@@ -112,11 +112,11 @@ namespace XiaoQi.Moudle.Authorizations
                     // var isTestCurrent = Appsettings.app(new string[] { "AppSettings", "UseLoadTest" }).ObjToBool();
 
                     //只做认证 token 验证通过 就允许访问  不验证
-                    if (result?.Principal != null || true)
-                    {
-                        context.Succeed(requirement);
-                        return;
-                    }
+                    //if (result?.Principal != null || true)
+                    //{
+                    //    context.Succeed(requirement);
+                    //    return;
+                    //}
 
                     //result?.Principal不为空即登录成功
                     if (result?.Principal != null)
@@ -157,7 +157,7 @@ namespace XiaoQi.Moudle.Authorizations
                         }
 
                         var isExp = false;
-
+                        var tets = httpContext.User.Claims.SingleOrDefault(s => s.Type == ClaimTypes.Expiration)?.Value;
                         // jwt
                         isExp = (httpContext.User.Claims.SingleOrDefault(s => s.Type == ClaimTypes.Expiration)?.Value) != null && DateTime.Parse(httpContext.User.Claims.SingleOrDefault(s => s.Type == ClaimTypes.Expiration)?.Value) >= DateTime.Now;
 

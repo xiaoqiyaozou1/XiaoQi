@@ -1,14 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using XiaoQi.IService;
 using XiaoQi.Moudle.Authorizations;
+using XiaoQi.Utilities;
 
 namespace XiaoQi.Controllers
 {
@@ -16,36 +20,94 @@ namespace XiaoQi.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
+        private IConfiguration Configuration { get; }
+
+        private IUserService _userService;
+        private ISysRoleService _sysRoleService;
+        private ISysResourcesService _sysResourcesService;
+        private ISysUserRoleService _sysUserRoleService;
+        private ISysRoleResourcesService _sysRoleResourcesService;
+        private PermissionRequirement _permissionRequirement;
+        public LoginController(IConfiguration configuration,
+            IUserService userService,
+            ISysRoleService sysRoleService,
+            ISysResourcesService sysResourcesService,
+            ISysUserRoleService sysUserRoleService,
+            ISysRoleResourcesService sysRoleResourcesService,
+            PermissionRequirement permissionRequirement)
+        {
+            Configuration = configuration;
+            _userService = userService;
+            _sysRoleService = sysRoleService;
+            _sysResourcesService = sysResourcesService;
+            _sysUserRoleService = sysUserRoleService;
+            _sysRoleResourcesService = sysRoleResourcesService;
+            _permissionRequirement = permissionRequirement;
+
+        }
         /// <summary>
         /// 获取所有的用户信息
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string userCount, string passWord)
         {
             try
             {
-                //如果是基于用户的授权策略，这里要添加用户;如果是基于角色的授权策略，这里要添加角色
-                var claims = new List<Claim> {
-                    new Claim(ClaimTypes.Name, "test"),
-                    new Claim(JwtRegisteredClaimNames.Jti, "aaa"),
-                    new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(60*60).ToString()) };
-                claims.Add(new Claim(ClaimTypes.Role, "a"));
-
-                List<PermissionItem> permissionItems = new List<PermissionItem>//这部分数据应该从数据库读取 如果想实时 在验证的地方从新获取最新的
+                var roleResourceAll1 = _sysRoleResourcesService.Query();
+                passWord = MD5Helper.MD5Encrypt32(passWord);
+                var userInfo = _userService.GetUserInfoByConutAndPwd(userCount, passWord);
+                if (userInfo == null)
                 {
-                    new PermissionItem
+                    return new JsonResult(null);
+                }
+                List<string> roleIds = new List<string>();
+                var tmpUserRole = _sysUserRoleService.QueryByLambada(o => o.UserId == userInfo.Id);
+                if (tmpUserRole != null)
+                    roleIds = tmpUserRole.RoleId.Split(",").ToList();
+                List<string> resoureIds = new List<string>();//资源 地址
+                List<string> roles = new List<string>();
+                //获取角色拥有得
+                if (roleIds.Count > 0)
+                {
+                    var roleResourceAll = _sysRoleResourcesService.Query();
+                    var roleAll = _sysRoleService.Query();
+                    var resourceAll = _sysResourcesService.Query();
+                    foreach (var item in roleIds)
                     {
-                        Role="a",
-                        Url="/a"
+                        var role = roleAll.Where(o => o.Id == item).FirstOrDefault().Name;
+                        var resourceIds = roleResourceAll.Where(o => o.RoleId == item).FirstOrDefault()?.ResourcesId;
+                        if (resourceIds != null)
+                        {
+                            var resourceList = resourceIds.Split(",").ToList();
+                            foreach (var resource in resourceList)
+                            {
+                                var url = resourceAll.Where(o => o.Id == resource).FirstOrDefault()?.Url;
+                                if (role != null && url != null)
+                                {
+                                    if (!roles.Contains(role))
+                                        roles.Add(role);
+                                    _permissionRequirement.Permissions.Add(new PermissionItem
+                                    {
+                                        Role = role,
+                                        Url = url
+                                    });
+                                }
+                            }
+                        }
+
+
+
                     }
-                };
-                PermissionRequirement permissionRequirement = new PermissionRequirement("", permissionItems, "Role", "Issuer", "Audience", null, TimeSpan.FromSeconds(60 * 60 * 24 * 365));
-                var jwtKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("xiaoqixiaoqixiaoqixiaoqixiaoqixiaoqixiaoqi"));//加密验证的key         
-                var jwtCreds = new SigningCredentials(jwtKey, SecurityAlgorithms.HmacSha256); //根据key' 生成的标识
-                permissionRequirement.SigningCredentials = jwtCreds;
-                var token = JwtToken.BuildJwtToken(claims.ToArray(), permissionRequirement);
+                }
+                //如果是基于用户的授权策略，这里要添加用户;如果是基于角色的授权策略，这里要添加角色
+                var claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(60 * 60 * 24 * 365).ToString()));
+                claims.AddRange(roles.Select(s => new Claim(ClaimTypes.Role, s)));
+                var token = JwtToken.BuildJwtToken(claims.ToArray(), _permissionRequirement);
                 Log4NetHelper.Info("test", null);
+
+
                 return new JsonResult(token);
             }
             catch (Exception)

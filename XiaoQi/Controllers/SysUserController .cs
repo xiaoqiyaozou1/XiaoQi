@@ -4,11 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using XiaoQi.EFCore;
 using XiaoQi.EFCore.Models;
 using XiaoQi.IService;
 using XiaoQi.Model;
+using XiaoQi.Utilities;
 
 namespace XiaoQi.Controllers
 {
@@ -58,6 +61,8 @@ namespace XiaoQi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSysUser(SysUser sysUser)
         {
+           
+            sysUser.Password = MD5Helper.MD5Encrypt32(sysUser.Password);
             var res = await _sysUserService.Add(sysUser);
             if (res)
                 messageModel.response = true;

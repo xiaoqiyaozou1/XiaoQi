@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XiaoQi.EFCore;
+using XiaoQi.EFCore.Models;
 using XiaoQi.IService;
 using XiaoQi.Model;
 
@@ -38,12 +39,12 @@ namespace XiaoQi.Controllers
         /// <summary>
         /// 添加
         /// </summary>
-        /// <param name="userinfo"></param>
+        /// <param name="sysUser"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> AddUserInfo(Userinfo userinfo)
+        public async Task<IActionResult> AddUserInfo(SysUser sysUser)
         {
-            var res = await _userService.Add(userinfo);
+            var res = await _userService.Add(sysUser);
             if (res)
                 messageModel.response = true;
             else
@@ -57,12 +58,12 @@ namespace XiaoQi.Controllers
         /// <summary>
         /// 更新
         /// </summary>
-        /// <param name="userinfo"></param>
+        /// <param name="sysUser"></param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<IActionResult> UpdateUserInfo(Userinfo userinfo)
+        public async Task<IActionResult> UpdateUserInfo(SysUser sysUser)
         {
-            var res = await _userService.Update(userinfo);
+            var res = await _userService.Update(sysUser);
             if (res)
                 messageModel.response = true;
             else

@@ -19,8 +19,17 @@ namespace XiaoQi.Service
         }
         public async Task<bool> Add(T t)
         {
-            var res = await _baseRepository.Add(t);
-            return res > 0;
+            try
+            {
+                var res = await _baseRepository.Add(t);
+                return res > 0;
+            }
+            catch (Exception e)
+            {
+               
+                throw e;
+            }
+          
         }
 
 

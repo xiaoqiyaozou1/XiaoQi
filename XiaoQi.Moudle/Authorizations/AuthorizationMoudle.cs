@@ -14,10 +14,16 @@ namespace XiaoQi.Moudle.Authorizations
 {
     public static class AuthorizationMoudle
     {
+    
         public static void AddAuthorizationSetup(this IServiceCollection services)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
+            //var serctKey = Configuration.GetValue<string>("TokenKey");
+
+            //var jwtKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(serctKey));//加密验证的key         
+            //var jwtCreds = new SigningCredentials(jwtKey, SecurityAlgorithms.HmacSha256); //根据key' 生成的标识
+           
 
             var jwtKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("xiaoqixiaoqixiaoqixiaoqixiaoqixiaoqixiaoqi"));//加密验证的key         
             var jwtCreds = new SigningCredentials(jwtKey, SecurityAlgorithms.HmacSha256); //根据key' 生成的标识
@@ -30,7 +36,7 @@ namespace XiaoQi.Moudle.Authorizations
                 "Issuer",
                 "Audience",
                 jwtCreds,
-                TimeSpan.FromSeconds(60 * 60)
+               TimeSpan.FromSeconds(60 * 60 * 24 * 365)
             );
 
             services.AddSingleton(jwtRequirement);//将该资源注册，可以在验证处理器种设置其值
